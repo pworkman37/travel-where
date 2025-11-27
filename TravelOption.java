@@ -1,11 +1,11 @@
-public class OutputOptions {
+public class TravelOption {
     private String description;
     private double cost;
     private String lodging;
     private String dates;
     private int travelers;
 
-    public OutputOptions(String description, double cost, String lodging, String dates, int travelers) {
+    public TravelOption(String description, double cost, String lodging, String dates, int travelers) {
         this.description = description;
         this.cost = cost;
         this.lodging = lodging;
@@ -23,4 +23,3 @@ public class OutputOptions {
                 "\n------------------------------\n";
     }
 }
-

@@ -14,7 +14,7 @@ public class TravelPlanner {
         TravelOption cheap = new TravelOption(
                 "Basic flight + hostel",
                 150 + r.nextInt(100),
-                "Hostel — shared room",
+                "Hostel  shared room",
                 input.dates,
                 input.travelers
         );
@@ -22,7 +22,7 @@ public class TravelPlanner {
         TravelOption value = new TravelOption(
                 "Economy flight + 3-star hotel",
                 300 + r.nextInt(150),
-                "Hotel — standard room",
+                "Hotel  standard room",
                 input.dates,
                 input.travelers
         );
@@ -38,4 +38,3 @@ public class TravelPlanner {
         return new TravelOption[]{cheap, value, premium};
     }
 }
-
