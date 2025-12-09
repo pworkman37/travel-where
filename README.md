@@ -18,8 +18,16 @@ Download The Zip File
   <img src="InstructionPictures/DonwloadZip.png" alt="Logo" width="600">
 </p>
 
+And open the zip file
+<p align="center">
+  <img src="FindAndOpenZip.png" alt="Logo" width="600">
+</p>
+
 ## Download
-Download Requirements
+In your Powershell or Terminal, you want to open the contents of the zip folder with the command:
+cd folder-path/travel-where-main
+
+Then, Download Requirements
 <p align="center">
   <img src="InstructionPictures/DownloadReq.png" alt="Logo" width="600">
 </p>
