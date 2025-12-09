@@ -44,7 +44,7 @@ Paste Website URL in browser
 </p>
 
 <p align="center">
-  <img src="InstructionPictures/Website.png" alt="Logo" width="600">
+  <img src="InstructionPictures/PutInBrowser.png" alt="Logo" width="600">
 </p>
 
 ## User Manual
