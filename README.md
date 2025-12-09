@@ -43,6 +43,10 @@ Paste Website URL in browser
   <img src="InstructionPictures/Website.png" alt="Logo" width="600">
 </p>
 
+<p align="center">
+  <img src="InstructionPictures/Website.png" alt="Logo" width="600">
+</p>
+
 ## User Manual
 Input Constraints:
 - Origin Airport Code
