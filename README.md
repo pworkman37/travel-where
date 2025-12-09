@@ -20,7 +20,7 @@ Download The Zip File
 
 And open the zip file
 <p align="center">
-  <img src="FindAndOpenZip.png" alt="Logo" width="600">
+  <img src="InstructionPictures/FindAndOpenZip.png" alt="Logo" width="600">
 </p>
 
 ## Download
