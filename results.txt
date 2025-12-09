@@ -1,0 +1,38 @@
+========= FLIGHT PRICES =========
+01: $177.96 — TP
+02: $177.96 — TP
+03: $177.96 — TP
+04: $184.17 — TP
+05: $200.12 — X1
+06: $255.90 — JetBlue
+07: $255.90 — VS
+08: $259.28 — AC
+09: $262.04 — AC
+10: $262.04 — AC
+11: $262.04 — AC
+12: $262.04 — AC
+13: $263.96 — TP
+14: $263.96 — TP
+15: $263.96 — TP
+16: $263.96 — TP
+17: $263.96 — JetBlue
+18: $265.19 — FI
+19: $265.19 — FI
+20: $265.19 — FI
+
+Cheapest Flight: $177.96
+Most Expensive Flight: $265.19
+Median Flight Price: $262.04
+==============================
+
+========= HOTEL PRICES =========
+01: $201.00 — HOLIDAY INN EXP WATFORD JUNCTI
+02: $406.30 — London Marriott Hotel Regents Park
+03: $493.20 — London Marriott Hotel Kensington
+04: $1104.92 — London Marriott Hotel Park Lane
+
+Cheapest Hotel: $201.00
+Most Expensive Hotel: $1104.92
+Median Hotel Price: $449.75
+==============================
+
