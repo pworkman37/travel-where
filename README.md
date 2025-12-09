@@ -25,11 +25,14 @@ And open the zip file
 
 ## Download
 In your Powershell or Terminal, you want to open the contents of the zip folder with the command:
-
-<pre> ```cd folder-path/travel-where-main ``` </pre>
+```
+cd folder-path/travel-where-main
+```
 
 Then, Download Requirements
-<pre> ```pip install -r requirements.txt ``` </pre>
+```
+pip install -r requirements.txt
+```
 <p align="center">
   <img src="InstructionPictures/DownloadReq.png" alt="Logo" width="600">
 </p>
