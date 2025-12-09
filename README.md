@@ -41,6 +41,10 @@ Input Constraints:
 - Shelter Check out Date mm/dd/yyyy 
 - Guest must be =>1
 
+<p align="center">
+  <img src="InstructionPictures/AllDone.png" alt="Logo" width="600">
+</p>
+
 ## Database Design
 
 ER Diagram
