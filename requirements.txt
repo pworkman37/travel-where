@@ -1,2 +1,2 @@
-Flask==2.3.2
-amadeus==5.1.0
+Flask==2.3.3
+amadeus==12.0.0

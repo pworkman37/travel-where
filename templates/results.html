@@ -14,6 +14,7 @@
         .results-section { max-width:700px; margin:20px auto; padding:20px; background:#ffffe0; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
         h2 { color:#006400; margin-bottom:10px; border-bottom:2px solid #00bfff; padding-bottom:5px; }
         p { font-size:1.1em; margin:8px 0; }
+        hr { border: 0; border-top: 1px solid #00bfff; margin:10px 0; }
     </style>
 </head>
 <body>
@@ -41,18 +42,38 @@
     {% if flight_results %}
     <div class="results-section">
         <h2>Flights</h2>
-        <p>Cheapest Flight: ${{ flight_results.cheapest[0] }} — {{ flight_results.cheapest[1] }}</p>
-        <p>Most Expensive Flight: ${{ flight_results.most_expensive[0] }} — {{ flight_results.most_expensive[1] }}</p>
-        <p>Median Flight: ${{ flight_results.median[0] }} — {{ flight_results.median[1] }}</p>
+        <p>Cheapest Flight: ${{ '%.2f' % flight_results.cheapest.price }} — {{ flight_results.cheapest.airline }}</p>
+        <p>Most Expensive Flight: ${{ '%.2f' % flight_results.most_expensive.price }} — {{ flight_results.most_expensive.airline }}</p>
+        <p>Median Flight: ${{ '%.2f' % flight_results.median.price }} — {{ flight_results.median.airline }}</p>
     </div>
     {% endif %}
 
     {% if hotel_results %}
     <div class="results-section">
         <h2>Hotels</h2>
-        <p>Cheapest Hotel: ${{ hotel_results.cheapest[0] }} — {{ hotel_results.cheapest[1] }}</p>
-        <p>Most Expensive Hotel: ${{ hotel_results.most_expensive[0] }} — {{ hotel_results.most_expensive[1] }}</p>
-        <p>Median Hotel: ${{ hotel_results.median[0] }} — {{ hotel_results.median[1] }}</p>
+        <p>Cheapest Hotel: ${{ '%.2f' % hotel_results.cheapest.price }} — {{ hotel_results.cheapest.hotel }}</p>
+        <p>Most Expensive Hotel: ${{ '%.2f' % hotel_results.most_expensive.price }} — {{ hotel_results.most_expensive.hotel }}</p>
+        <p>Median Hotel: ${{ '%.2f' % hotel_results.median.price }} — {{ hotel_results.median.hotel }}</p>
+    </div>
+    {% endif %}
+
+    {% if bundles %}
+    <div class="results-section">
+        <h2>Bundles (Flight + Hotel)</h2>
+
+        <p><strong>Cheapest Bundle:</strong> ${{ '%.2f' % bundles.cheapest.total_price }}</p>
+        <p>Flight: ${{ '%.2f' % bundles.cheapest.flight.price }} — {{ bundles.cheapest.flight.airline }}</p>
+        <p>Hotel: ${{ '%.2f' % bundles.cheapest.hotel.price }} — {{ bundles.cheapest.hotel.hotel }}</p>
+        <hr>
+
+        <p><strong>Median Bundle:</strong> ${{ '%.2f' % bundles.median.total_price }}</p>
+        <p>Flight: ${{ '%.2f' % bundles.median.flight.price }} — {{ bundles.median.flight.airline }}</p>
+        <p>Hotel: ${{ '%.2f' % bundles.median.hotel.price }} — {{ bundles.median.hotel.hotel }}</p>
+        <hr>
+
+        <p><strong>Most Expensive Bundle:</strong> ${{ '%.2f' % bundles.most_expensive.total_price }}</p>
+        <p>Flight: ${{ '%.2f' % bundles.most_expensive.flight.price }} — {{ bundles.most_expensive.flight.airline }}</p>
+        <p>Hotel: ${{ '%.2f' % bundles.most_expensive.hotel.price }} — {{ bundles.most_expensive.hotel.hotel }}</p>
     </div>
     {% endif %}
 </body>
