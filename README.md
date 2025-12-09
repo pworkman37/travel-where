@@ -25,7 +25,8 @@ And open the zip file
 
 ## Download
 In your Powershell or Terminal, you want to open the contents of the zip folder with the command:
-\n cd folder-path/travel-where-main
+
+cd folder-path/travel-where-main
 
 Then, Download Requirements
 <p align="center">
