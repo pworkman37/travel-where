@@ -8,28 +8,40 @@ TravelWhere is a software that offers users flight prices and hotel prices for t
 ## Table of Contents
 - [Set up](#set-up)
   - [Download](#download)
-  - [Installation](#installation)
+  - [Website Access](#website-access)
 - [User Manual](#user-manual)
 - [Database Design](#database-design)
-  - [ER Diagram](#er-diagram)
-
 
 ## Set up
-...
+Download The Zip File
+<p align="center">
+  <img src="InstructionPictures/DownloadZip.png" alt="Logo" width="600">
+</p>
 
 ## Download
-...
+Download Requirements
+<p align="center">
+  <img src="InstructionPictures/DownloadReq.png" alt="Logo" width="600">
+</p>
 
-## Installation
-...
+## Website Access
+Paste Website URL in browser
 
 ## User Manual
-...
+Input Constraints:
+- Origin Airport Code
+- Destination Airport Code
+- Flight Date mm/dd/yyyy
+- Passengers must be =>1
+- Enter shelter city name (Any City)
+- Shelter Check in Date mm/dd/yyyy
+- Shelter Check out Date mm/dd/yyyy 
+- Guest must be =>1
 
 ## Database Design
-...
 
-
-## ER Diagram
-...
+ER Diagram
+<p align="center">
+  <img src="InstructionPictures/ERDiagram.png" alt="Logo" width="600">
+</p>
 
