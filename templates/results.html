@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TravelWhere</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #e6f7ff; color: #333; padding: 20px; }
+        h1 { text-align:center; color: #006400; margin-bottom: 20px; font-size:2.5em; }
+        form { background: #f0fff0; padding: 20px; border-radius:12px; max-width:600px; margin:auto; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+        label { display:block; margin:10px 0 5px; font-weight:bold; }
+        input, select { width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-bottom:10px; }
+        button { background:#00bfff; color:white; padding:12px; border:none; border-radius:10px; font-size:1.2em; cursor:pointer; transition:0.3s; width:100%; }
+        button:hover { background:#32cd32; transform:scale(1.05); }
+        .results-section { max-width:700px; margin:20px auto; padding:20px; background:#ffffe0; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+        h2 { color:#006400; margin-bottom:10px; border-bottom:2px solid #00bfff; padding-bottom:5px; }
+        p { font-size:1.1em; margin:8px 0; }
+    </style>
+</head>
+<body>
+    <h1>TravelWhere</h1>
+    <form method="POST">
+        <label>Flight Origin (IATA):</label>
+        <input type="text" name="origin" required placeholder="e.g., NYC">
+        <label>Flight Destination (IATA):</label>
+        <input type="text" name="destination" required placeholder="e.g., LON">
+        <label>Departure Date:</label>
+        <input type="date" name="depart_date" required>
+        <label>Passengers:</label>
+        <input type="number" name="passengers" min="1" max="8" required>
+        <label>Hotel City (Name):</label>
+        <input type="text" name="hotel_city" required placeholder="e.g., London">
+        <label>Check-in:</label>
+        <input type="date" name="checkin" required>
+        <label>Check-out:</label>
+        <input type="date" name="checkout" required>
+        <label>Guests:</label>
+        <input type="number" name="guests" min="1" max="8" required>
+        <button type="submit">Search Flights & Hotels</button>
+    </form>
+
+    {% if flight_results %}
+    <div class="results-section">
+        <h2>Flights</h2>
+        <p>Cheapest Flight: ${{ flight_results.cheapest[0] }} — {{ flight_results.cheapest[1] }}</p>
+        <p>Most Expensive Flight: ${{ flight_results.most_expensive[0] }} — {{ flight_results.most_expensive[1] }}</p>
+        <p>Median Flight: ${{ flight_results.median[0] }} — {{ flight_results.median[1] }}</p>
+    </div>
+    {% endif %}
+
+    {% if hotel_results %}
+    <div class="results-section">
+        <h2>Hotels</h2>
+        <p>Cheapest Hotel: ${{ hotel_results.cheapest[0] }} — {{ hotel_results.cheapest[1] }}</p>
+        <p>Most Expensive Hotel: ${{ hotel_results.most_expensive[0] }} — {{ hotel_results.most_expensive[1] }}</p>
+        <p>Median Hotel: ${{ hotel_results.median[0] }} — {{ hotel_results.median[1] }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>

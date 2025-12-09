@@ -1,7 +1,8 @@
-import tkinter as tk
-from tkinter import ttk, scrolledtext
+from flask import Flask, render_template, request
 from amadeus import Client, ResponseError
 import statistics
+
+app = Flask(__name__)
 
 # ----------------- AMADEUS API KEYS -----------------
 AMADEUS_CLIENT_ID = "HOVGmCpH1aiyeCiP4os6GexwellBybIZ"
@@ -12,7 +13,7 @@ amadeus = Client(
     client_secret=AMADEUS_CLIENT_SECRET
 )
 
-# Airline names for flight results
+# Airline codes to names
 AIRLINE_NAMES = {
     "AA": "American Airlines",
     "DL": "Delta Air Lines",
@@ -25,7 +26,13 @@ AIRLINE_NAMES = {
     "HA": "Hawaiian Airlines"
 }
 
-# ----------------- FLIGHT SEARCH -----------------
+# City names to IATA codes for hotels
+CITY_TO_IATA = {
+    "London": "LON",
+    "New York": "NYC"
+}
+
+# ----------------- FLIGHTS -----------------
 def search_flights(origin, destination, depart_date, passengers, limit=20):
     try:
         response = amadeus.shopping.flight_offers_search.get(
@@ -35,10 +42,7 @@ def search_flights(origin, destination, depart_date, passengers, limit=20):
             adults=passengers,
             max=limit
         )
-        data = response.data
-
-        if not data:
-            return [], 0, 0, 0
+        data = response.data or []
 
         price_entries = []
         for offer in data[:limit]:
@@ -47,55 +51,41 @@ def search_flights(origin, destination, depart_date, passengers, limit=20):
             airline_name = AIRLINE_NAMES.get(airline_code, airline_code)
             price_entries.append((price, airline_name))
 
+        if not price_entries:
+            return {}
+
+        # Sort prices
         price_entries.sort(key=lambda x: x[0])
         prices_only = [p[0] for p in price_entries]
-        cheapest_price, most_expensive_price = prices_only[0], prices_only[-1]
+
+        # Median entry
         median_price = statistics.median(prices_only)
+        median_entry = min(price_entries, key=lambda x: abs(x[0]-median_price))
 
-        with open("results.txt", "a") as f:
-            f.write("========= FLIGHT PRICES =========\n")
-            for i, (price, airline) in enumerate(price_entries):
-                f.write(f"{i+1:02d}: ${price:.2f}  {airline}\n")
-            f.write(f"\nCheapest Flight: ${cheapest_price:.2f}\n")
-            f.write(f"Most Expensive Flight: ${most_expensive_price:.2f}\n")
-            f.write(f"Median Flight Price: ${median_price:.2f}\n")
-            f.write("==============================\n\n")
+        return {
+            "cheapest": price_entries[0],
+            "most_expensive": price_entries[-1],
+            "median": median_entry
+        }
+    except ResponseError:
+        return {}
 
-        return price_entries, cheapest_price, most_expensive_price, median_price
-
-    except ResponseError as error:
-        with open("results.txt", "a") as f:
-            f.write(f"Flight API Error: {error}\n")
-        return [], 0, 0, 0
-
-
-# ----------------- HOTEL SEARCH -----------------
-def search_hotels(city_input, check_in_date, check_out_date, guests, limit=20):
-    try:
-        location_response = amadeus.reference_data.locations.hotels.by_city.get(
-            cityCode=city_input.upper()
-        )
-        locations = location_response.data
-        if not locations:
-            return [], 0, 0, 0
-
-        hotel_ids = [hotel["hotelId"] for hotel in locations[:limit]]  # limit to avoid 414
-    except ResponseError as error:
-        with open("results.txt", "a") as f:
-            f.write(f"Hotel Location API Error: {error}\n")
-        return [], 0, 0, 0
+# ----------------- HOTELS -----------------
+def search_hotels(city_name, check_in, check_out, guests, limit=20):
+    city_code = CITY_TO_IATA.get(city_name.title())
+    if not city_code:
+        return {}
 
     try:
-        response = amadeus.shopping.hotel_offers_search.get(
-            hotelIds=hotel_ids,
-            checkInDate=check_in_date,
-            checkOutDate=check_out_date,
+        response = amadeus.shopping.hotel_offers.get(
+            cityCode=city_code,
+            checkInDate=check_in,
+            checkOutDate=check_out,
             adults=guests,
-            roomQuantity=1
+            roomQuantity=1,
+            max=limit
         )
-        data = response.data
-        if not data:
-            return [], 0, 0, 0
+        data = response.data or []
 
         price_entries = []
         for offer in data[:limit]:
@@ -103,123 +93,45 @@ def search_hotels(city_input, check_in_date, check_out_date, guests, limit=20):
             price = float(offer["offers"][0]["price"]["total"])
             price_entries.append((price, hotel_name))
 
+        if not price_entries:
+            return {}
+
         price_entries.sort(key=lambda x: x[0])
         prices_only = [p[0] for p in price_entries]
-        cheapest_price, most_expensive_price = prices_only[0], prices_only[-1]
         median_price = statistics.median(prices_only)
+        median_entry = min(price_entries, key=lambda x: abs(x[0]-median_price))
 
-        with open("results.txt", "a") as f:
-            f.write("========= HOTEL PRICES =========\n")
-            for i, (price, hotel) in enumerate(price_entries):
-                f.write(f"{i+1:02d}: ${price:.2f}  {hotel}\n")
-            f.write(f"\nCheapest Hotel: ${cheapest_price:.2f}\n")
-            f.write(f"Most Expensive Hotel: ${most_expensive_price:.2f}\n")
-            f.write(f"Median Hotel Price: ${median_price:.2f}\n")
-            f.write("==============================\n\n")
+        return {
+            "cheapest": price_entries[0],
+            "most_expensive": price_entries[-1],
+            "median": median_entry
+        }
 
-        return price_entries, cheapest_price, most_expensive_price, median_price
+    except ResponseError:
+        return {}
 
-    except ResponseError as error:
-        with open("results.txt", "a") as f:
-            f.write(f"Hotel API Error: {error}\n")
-        return [], 0, 0, 0
+# ----------------- FLASK ROUTE -----------------
+@app.route("/", methods=["GET", "POST"])
+def index():
+    flight_results = {}
+    hotel_results = {}
+    if request.method == "POST":
+        origin = request.form["origin"].strip().upper()
+        destination = request.form["destination"].strip().upper()
+        depart_date = request.form["depart_date"].strip()
+        passengers = int(request.form["passengers"])
 
+        hotel_city = request.form["hotel_city"].strip()
+        checkin = request.form["checkin"].strip()
+        checkout = request.form["checkout"].strip()
+        guests = int(request.form["guests"])
 
-# ----------------- GUI -----------------
-class TravelWhereGUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("TravelWhere Flight + Hotel Search")
-        self.root.geometry("950x750")
+        flight_results = search_flights(origin, destination, depart_date, passengers)
+        hotel_results = search_hotels(hotel_city, checkin, checkout, guests)
 
-        # --- Flight Info ---
-        tk.Label(root, text="Flight Origin (IATA):").grid(row=0, column=0, padx=10, pady=5, sticky="w")
-        self.origin_entry = tk.Entry(root, width=20)
-        self.origin_entry.grid(row=0, column=1, padx=10)
+    return render_template("results.html",
+                           flight_results=flight_results,
+                           hotel_results=hotel_results)
 
-        tk.Label(root, text="Flight Destination (IATA):").grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        self.dest_entry = tk.Entry(root, width=20)
-        self.dest_entry.grid(row=1, column=1, padx=10)
-
-        tk.Label(root, text="Departure Date (YYYY-MM-DD):").grid(row=2, column=0, padx=10, pady=5, sticky="w")
-        self.depart_entry = tk.Entry(root, width=20)
-        self.depart_entry.grid(row=2, column=1, padx=10)
-
-        tk.Label(root, text="Passengers:").grid(row=3, column=0, padx=10, pady=5, sticky="w")
-        self.passengers_var = tk.StringVar()
-        self.passengers_dropdown = ttk.Combobox(root, textvariable=self.passengers_var, state="readonly", width=18)
-        self.passengers_dropdown["values"] = [1, 2, 3, 4, 5, 6, 7, 8]
-        self.passengers_dropdown.current(0)
-        self.passengers_dropdown.grid(row=3, column=1, padx=10)
-
-        # --- Hotel Info ---
-        tk.Label(root, text="Hotel City (IATA):").grid(row=4, column=0, padx=10, pady=5, sticky="w")
-        self.city_entry = tk.Entry(root, width=20)
-        self.city_entry.grid(row=4, column=1, padx=10)
-
-        tk.Label(root, text="Check-in Date (YYYY-MM-DD):").grid(row=5, column=0, padx=10, pady=5, sticky="w")
-        self.checkin_entry = tk.Entry(root, width=20)
-        self.checkin_entry.grid(row=5, column=1, padx=10)
-
-        tk.Label(root, text="Check-out Date (YYYY-MM-DD):").grid(row=6, column=0, padx=10, pady=5, sticky="w")
-        self.checkout_entry = tk.Entry(root, width=20)
-        self.checkout_entry.grid(row=6, column=1, padx=10)
-
-        tk.Label(root, text="Guests:").grid(row=7, column=0, padx=10, pady=5, sticky="w")
-        self.guests_var = tk.StringVar()
-        self.guests_dropdown = ttk.Combobox(root, textvariable=self.guests_var, state="readonly", width=18)
-        self.guests_dropdown["values"] = [1, 2, 3, 4, 5, 6, 7, 8]
-        self.guests_dropdown.current(0)
-        self.guests_dropdown.grid(row=7, column=1, padx=10)
-
-        # Search button
-        self.search_button = tk.Button(root, text="Search Flight + Hotel", command=self.perform_search, width=30)
-        self.search_button.grid(row=8, column=0, columnspan=2, pady=15)
-
-        # Results box
-        self.results_box = scrolledtext.ScrolledText(root, width=110, height=30)
-        self.results_box.grid(row=9, column=0, columnspan=3, padx=10, pady=10)
-
-    def perform_search(self):
-        with open("results.txt", "w") as f:
-            f.write("")
-
-        origin = self.origin_entry.get().strip().upper()
-        destination = self.dest_entry.get().strip().upper()
-        depart_date = self.depart_entry.get().strip()
-        passengers = int(self.passengers_var.get())
-
-        city_code = self.city_entry.get().strip().upper()
-        check_in = self.checkin_entry.get().strip()
-        check_out = self.checkout_entry.get().strip()
-        guests = int(self.guests_var.get())
-
-        self.results_box.delete(1.0, tk.END)
-        self.results_box.insert(tk.END, "Searching flights and hotels...\n")
-
-        flight_entries, flight_cheapest, flight_expensive, flight_median = search_flights(
-            origin, destination, depart_date, passengers
-        )
-        hotel_entries, hotel_cheapest, hotel_expensive, hotel_median = search_hotels(
-            city_code, check_in, check_out, guests
-        )
-
-        self.results_box.delete(1.0, tk.END)
-        self.results_box.insert(tk.END, "Search complete — results saved to results.txt\n\n")
-
-        self.results_box.insert(tk.END, "----- Flights -----\n")
-        for price, airline in flight_entries:
-            self.results_box.insert(tk.END, f"${price:.2f} — {airline}\n")
-        self.results_box.insert(tk.END, f"\nCheapest: ${flight_cheapest:.2f}, Most Expensive: ${flight_expensive:.2f}, Median: ${flight_median:.2f}\n\n")
-
-        self.results_box.insert(tk.END, "----- Hotels -----\n")
-        for price, hotel in hotel_entries:
-            self.results_box.insert(tk.END, f"${price:.2f} — {hotel}\n")
-        self.results_box.insert(tk.END, f"\nCheapest: ${hotel_cheapest:.2f}, Most Expensive: ${hotel_expensive:.2f}, Median: ${hotel_median:.2f}\n")
-
-
-# ----------------- RUN APP -----------------
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = TravelWhereGUI(root)
-    root.mainloop()
+    app.run(debug=True)
