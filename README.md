@@ -15,7 +15,7 @@ TravelWhere is a software that offers users flight prices and hotel prices for t
 ## Set up
 Download The Zip File
 <p align="center">
-  <img src="InstructionPictures/DownloadZip.png" alt="Logo" width="600">
+  <img src="InstructionPictures/DonwloadZip.png" alt="Logo" width="600">
 </p>
 
 ## Download
