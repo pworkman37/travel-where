@@ -1,32 +1,30 @@
 TravelWhere is a software that offers users flight prices and hotel prices for their vacation. It offers 3 options a luxury, cheap, and average price for all trips.
 
 ## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Database Schema](#database-schema)
-- [Installation](#installation)
-- [Usage](#usage)
-- [File Structure](#file-structure)
-- [Sample Queries](#sample-queries)
-- [License](#license)
+- [Set up](#set-up)
+  - [Download](#download)
+  - [Installation](#installation)
+- [User Manual](#user-manual)
+- [Database Design](#database-design)
+  - [ER Diagram](#er-diagram)
+  - [Tables](#tables)
 
-## Overview
+
+## Set up
 ...
 
-## Features
-...
-
-## Database Schema
+## Download
 ...
 
 ## Installation
 ...
 
-## Usage
+## User Manual
 ...
 
-## File Structure
+## Database Design
 ...
+
 
 ## Sample Queries
 ...
