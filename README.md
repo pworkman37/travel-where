@@ -7,7 +7,6 @@ TravelWhere is a software that offers users flight prices and hotel prices for t
 - [User Manual](#user-manual)
 - [Database Design](#database-design)
   - [ER Diagram](#er-diagram)
-  - [Tables](#tables)
 
 
 ## Set up
@@ -26,8 +25,6 @@ TravelWhere is a software that offers users flight prices and hotel prices for t
 ...
 
 
-## Sample Queries
+## ER Diagram
 ...
 
-## License
-...
