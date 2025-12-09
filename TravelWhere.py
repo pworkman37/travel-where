@@ -6,7 +6,7 @@ from amadeus import Client, ResponseError
 
 app = Flask(__name__)
 
-# ----------------- AMADEUS TEST KEYS -----------------
+#AMADEUS TEST KEYS
 AMADEUS_CLIENT_ID = "HOVGmCpH1aiyeCiP4os6GexwellBybIZ"
 AMADEUS_CLIENT_SECRET = "o0RPAq66ppyX3IDa"
 
@@ -15,7 +15,7 @@ amadeus = Client(
     client_secret=AMADEUS_CLIENT_SECRET
 )
 
-# ----------------- AIRLINE CODES -----------------
+#AIRLINE CODES to English in a dict
 AIRLINE_NAMES = {
     "AA": "American Airlines",
     "DL": "Delta Air Lines",
@@ -51,26 +51,26 @@ AIRLINE_NAMES = {
 }
 
 
-# ----------------- CITY → IATA -----------------
+#CITY to Airport Code
 CITY_TO_IATA = {
-    "New York": "NYC",        # All airports in NYC
+    "New York": "NYC",   
     "Los Angeles": "LAX",
-    "Chicago": "CHI",          # All airports in Chicago
+    "Chicago": "CHI",    
     "San Francisco": "SFO",
     "Miami": "MIA",
     "Boston": "BOS",
     "Dallas": "DFW",
     "Atlanta": "ATL",
     "Seattle": "SEA",
-    "Washington DC": "WAS",   # All airports in DC
-    "London": "LON",          # All airports in London
-    "Paris": "PAR",           # All airports in Paris
+    "Washington DC": "WAS",  
+    "London": "LON",          
+    "Paris": "PAR",           
     "Berlin": "BER",
     "Madrid": "MAD",
-    "Rome": "ROM",            # All airports in Rome
-    "Tokyo": "TYO",           # All airports in Tokyo
+    "Rome": "ROM",            
+    "Tokyo": "TYO",           
     "Osaka": "OSA",
-    "Beijing": "BJS",         # All airports in Beijing
+    "Beijing": "BJS",         
     "Shanghai": "SHA",
     "Singapore": "SIN",
     "Hong Kong": "HKG",
@@ -78,14 +78,14 @@ CITY_TO_IATA = {
     "Istanbul": "IST",
     "Sydney": "SYD",
     "Melbourne": "MEL",
-    "Toronto": "YTO",         # All airports in Toronto
+    "Toronto": "YTO",        
     "Vancouver": "YVR",
-    "Montreal": "YMQ",        # All airports in Montreal
+    "Montreal": "YMQ",       
     "Rio de Janeiro": "GIG",
     "Sao Paulo": "GRU",
     "Cape Town": "CPT",
     "Johannesburg": "JNB",
-    "Moscow": "MOW",          # All airports in Moscow
+    "Moscow": "MOW",         
     "Amsterdam": "AMS",
     "Lisbon": "LIS",
     "Dublin": "DUB"
@@ -95,6 +95,7 @@ CITY_TO_IATA = {
 # ----------------- FLIGHT SEARCH -----------------
 def search_flights(origin, destination, depart_date, passengers, limit=20):
     try:
+        #Amadeus call format found on their website
         response = amadeus.shopping.flight_offers_search.get(
             originLocationCode=origin,
             destinationLocationCode=destination,
@@ -103,10 +104,13 @@ def search_flights(origin, destination, depart_date, passengers, limit=20):
             max=limit
         )
 
+        #Where the data from Amadeus goes and each unique price point
         data = response.data or []
         price_entries = []
 
         for offer in data:
+            #iterates through data to make a list of prices to calculate options later
+            #exception handling for multiple problems that may occur during this process
             try:
                 price = float(offer["price"]["total"])
                 airline_code = offer["itineraries"][0]["segments"][0]["carrierCode"]
@@ -114,16 +118,19 @@ def search_flights(origin, destination, depart_date, passengers, limit=20):
                 price_entries.append((price, airline_name))
             except (KeyError, TypeError, ValueError):
                 continue
-
+        #if no prices/flights return an empty list
         if not price_entries:
             return {}
 
+        #sorts prices from high to low to calculate the cheapest, median, and most expensive flight prices
         price_entries.sort(key=lambda x: x[0])
         prices_only = [p[0] for p in price_entries]
 
+        #gathers median price
         median_price = statistics.median(prices_only)
         median_entry = min(price_entries, key=lambda x: abs(x[0] - median_price))
 
+        #outputs prices using the price entries dictionary holding price and airline code
         return {
             "cheapest": {"price": price_entries[0][0], "airline": price_entries[0][1]},
             "most_expensive": {"price": price_entries[-1][0], "airline": price_entries[-1][1]},
@@ -141,12 +148,15 @@ HOTEL_BRANDS = [
     "InterContinental", "Radisson", "Westin", "Four Seasons", "JW Marriott"
 ]
 
-def search_hotels_simulated(city_name, check_in, check_out, guests=1, limit=5):
+def search_hotels_simulated(city_name, check_in, check_out, guests, limit=5):
     """
     Simulate hotels with real brand names + city, scaling price per room (2 guests per room)
     and per night.
     """
+
+    #Formats city name so no matter entry always looks presentable
     city_name = city_name.title()
+    #generates 5 different hotels to compare prices from 
     hotels = [f"{HOTEL_BRANDS[i % len(HOTEL_BRANDS)]} {city_name}" for i in range(limit)]
 
     # Calculate number of nights from check-in/check-out
@@ -160,12 +170,16 @@ def search_hotels_simulated(city_name, check_in, check_out, guests=1, limit=5):
         rooms_needed = math.ceil(guests / 2)
         # Base price per night per room
         base_price = 200 + random.randint(20, 200)
+        # to get total price
         total_price = base_price * nights * rooms_needed
+        # add total price of specific hotel to the list
         price_entries.append((total_price, hotel))
 
     # Sort by price
     price_entries.sort(key=lambda x: x[0])
     prices_only = [p[0] for p in price_entries]
+
+    #get median price from list for output
     median_price = statistics.median(prices_only)
     median_entry = min(price_entries, key=lambda x: abs(x[0] - median_price))
 
@@ -183,6 +197,7 @@ def index():
     hotel_results = {}
     bundles = {}
 
+    #gathers information from text boxes on the website to use in the search functions
     if request.method == "POST":
         origin = request.form.get("origin", "").strip().upper()
         destination = request.form.get("destination", "").strip().upper()
@@ -194,8 +209,9 @@ def index():
         checkout = request.form.get("checkout", "")
         guests = int(request.form.get("guests", 1))
 
+        #Search function call with parameters provided by the user
         flight_results = search_flights(origin, destination, depart_date, passengers)
-        hotel_results = search_hotels_simulated(hotel_city, checkin, checkout, limit=5)
+        hotel_results = search_hotels_simulated(hotel_city, checkin, checkout, guests, limit=5)
 
         # ----------------- Create Bundles -----------------
         if flight_results and hotel_results:
@@ -218,12 +234,12 @@ def index():
             }
 
     return render_template(
-        "results.html",
+        "Website.html",
         flight_results=flight_results,
         hotel_results=hotel_results,
         bundles=bundles
     )
 
-
+#Run APP
 if __name__ == "__main__":
     app.run(debug=True)
