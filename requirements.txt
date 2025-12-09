@@ -1,2 +1,3 @@
+# Python 3.10+ required
 Flask==2.3.3
 amadeus==12.0.0

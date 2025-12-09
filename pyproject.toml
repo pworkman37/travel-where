@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "travelwhere"
+version = "0.1.0"
+description = "TravelWhere Flask App with Flights and Hotels"
+requires-python = ">=3.10"
+dependencies = [
+    "Flask==2.3.3",
+    "amadeus==12.0.0"
+]
