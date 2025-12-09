@@ -9,6 +9,7 @@ cur = conn.cursor()
 
 # --- Create tables (SQLite compatible) ---
 
+#User Table
 cur.execute("""
 CREATE TABLE User (
     user_id        INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +20,7 @@ CREATE TABLE User (
 );
 """)
 
+#Trip Table
 cur.execute("""
 CREATE TABLE Trip (
     trip_id      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +33,7 @@ CREATE TABLE Trip (
 );
 """)
 
+#Destination Table
 cur.execute("""
 CREATE TABLE Destination (
     destination_id  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +43,7 @@ CREATE TABLE Destination (
 );
 """)
 
+#Transportation Table
 cur.execute("""
 CREATE TABLE Transportation (
     transportation_id  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,6 +57,7 @@ CREATE TABLE Transportation (
 );
 """)
 
+#Shelter Table
 cur.execute("""
 CREATE TABLE Shelter (
     shelter_id        INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,6 +70,7 @@ CREATE TABLE Shelter (
 );
 """)
 
+#Trip -> Destination Relationship
 cur.execute("""
 CREATE TABLE TripDestination (
     trip_destination_id  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,6 +81,7 @@ CREATE TABLE TripDestination (
 );
 """)
 
+#Trip -> Transportation Relationship
 cur.execute("""
 CREATE TABLE TripTransportation (
     trip_transportation_id  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,43 +94,43 @@ CREATE TABLE TripTransportation (
 
 # --- Insert sample data into each table ---
 
-# User
+# User Sample
 cur.execute("""
 INSERT INTO User (username, email, password_hash)
 VALUES ('jayden123', 'jayden@example.com', 'hashed_password_here');
 """)
 
-# Trip
+# Trip Sample
 cur.execute("""
 INSERT INTO Trip (user_id, trip_name, start_date, end_date, total_price)
 VALUES (1, 'Summer Europe Trip', '2025-06-01', '2025-06-20', 2500.00);
 """)
 
-# Destination
+# Destination Sample
 cur.execute("""
 INSERT INTO Destination (city, country, description)
 VALUES ('Paris', 'France', 'City of Light');
 """)
 
-# Transportation
+# Transportation Sample
 cur.execute("""
 INSERT INTO Transportation (type, company, departure_location, arrival_location, departure_time, arrival_time, price)
 VALUES ('flight', 'Air France', 'New York', 'Paris', '2025-06-01 18:00', '2025-06-02 07:30', 850.00);
 """)
 
-# Shelter
+# Shelter Sample
 cur.execute("""
 INSERT INTO Shelter (destination_id, name, type, star_rating, price_per_night)
 VALUES (1, 'Hotel Lumiere', 'Hotel', 4, 150.00);
 """)
 
-# TripDestination
+# TripDestination Sample
 cur.execute("""
 INSERT INTO TripDestination (trip_id, destination_id)
 VALUES (1, 1);
 """)
 
-# TripTransportation
+# TripTransportation Sample
 cur.execute("""
 INSERT INTO TripTransportation (trip_id, transportation_id)
 VALUES (1, 1);
