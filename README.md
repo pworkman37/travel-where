@@ -26,6 +26,9 @@ Download Requirements
 
 ## Website Access
 Paste Website URL in browser
+<p align="center">
+  <img src="InstructionPictures/Website.png" alt="Logo" width="600">
+</p>
 
 ## User Manual
 Input Constraints:
