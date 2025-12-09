@@ -3,7 +3,7 @@
 </p>
 ---
 
-TravelWhere is a software service that offers users flight prices and hotel prices for their vacation. It offers 3 options a luxury, cheap, and average price for all trips.
+TravelWhere is a software service that offers users both flight and hotel prices for their vacations. It offers 3 options: a luxury, cheap, and average price for all trips.
 
 ## Table of Contents
 - [Set up](#set-up)
