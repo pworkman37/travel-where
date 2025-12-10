@@ -30,6 +30,7 @@ cd folder-path/travel-where-main
 ```
 
 Then, Download Requirements
+If, python is not on your device please run pip install .
 ```
 pip install -r requirements.txt
 ```
