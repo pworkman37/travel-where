@@ -39,6 +39,7 @@ pip install -r requirements.txt
 </p>
 
 ## Website Access
+Then, in your PowerShell run the comman python TravelWhere.py
 Paste Website URL in browser
 <p align="center">
   <img src="InstructionPictures/Website.png" alt="Logo" width="600">
