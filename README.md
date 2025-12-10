@@ -72,7 +72,7 @@ ER Diagram
   <img src="InstructionPictures/ERDiagram.png" alt="Logo" width="600">
 
 ## Trello Board
-<p><a href="https://www.example.com">Visit Example.com</a></p>
+<p><a href="https://trello.com/invite/b/6915024a84136ae51a4ae420/ATTI120cdaed67688971ea029255e4ebc5784DF3A205/travelwhere">Visit our Trello Board!!</a></p>
 
 
 Thank you !!
