@@ -30,7 +30,7 @@ cd folder-path/travel-where-main
 ```
 
 Then, Download Requirements
-If, python is not on your device please run pip install .
+If python is not on your device, install it by running:
 ```
 pip install -r requirements.txt
 ```
@@ -39,8 +39,10 @@ pip install -r requirements.txt
 </p>
 
 ## Website Access
-Then, in your PowerShell run the command python TravelWhere.py
-
+Then, in your PowerShell run the command: 
+```
+python TravelWhere.py
+```
 Paste Website URL in browser
 <p align="center">
   <img src="InstructionPictures/Website.png" alt="Logo" width="600">
